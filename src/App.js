@@ -1,26 +1,82 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, Fragment } from 'react'
+import fetch from 'isomorphic-unfetch'
+import SearchBar from './components/SearchBar'
+import List from './components/List'
+import { ClipLoader } from 'react-spinners'
+import styled from 'styled-components'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const Header = styled.h2`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+const Section = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 10px;
+`
+
+class App extends Component {
+  state = {
+    isLoading: false,
+    summoner: undefined,
+    matches: undefined
+  }
+
+//get provided summoner name
+getAndHandleSummoner = async summonerName => {
+  const summonerResp = await fetch(
+    `http://localhost:5000/${summonerName}`
+  )
+  const summoner = await summonerResp.json()
+
+  this.setState({ summoner: summoner })
+
+  return summoner.accountId
 }
 
-export default App;
+//use summoner name to load summoner matches
+loadSummonerMatches = async summonerName => {
+  this.setState({ isLoading: true, summoner: undefined })
+
+  const accountId = await this.getAndHandleSummoner(summonerName)
+
+  const matchesResp = await fetch(
+    `http://localhost:5000/${accountId}/matches`
+  )
+  const matches = await matchesResp.json()
+
+  this.setState({ isLoading: false, matches: matches })
+}
+
+render() {
+    return (
+      <Fragment>
+        <Header> League Stats App </Header>
+
+        <SearchBar handleSubmit={this.loadSummonerMatches} />
+
+        <Section>
+        {this.state.isLoading ? <ClipLoader
+          sizeUnit={"px"}
+          size={50}
+          color={'#123abc'}
+          loading={this.state.isLoading}
+          style={{alignItems: 'center'}}
+        /> : null}
+        {this.state.matches ? (
+          <List matches={this.state.matches} />
+        ) : null}
+        </Section>
+
+      </Fragment>
+    )
+  }
+}
+
+export default App
