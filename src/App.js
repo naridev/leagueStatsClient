@@ -5,6 +5,14 @@ import List from './components/List'
 import { ClipLoader } from 'react-spinners'
 import styled from 'styled-components'
 
+if(process.env.NODE_ENV === 'development') {
+  url = 'http://localhost:5000/'
+}
+
+if(process.env.NODE_ENV === 'production') {
+  url = 'https://league-app-stats.herokuapp.com/'
+}
+
 
 const Header = styled.h2`
   display: flex;
@@ -31,7 +39,7 @@ class App extends Component {
 //get provided summoner name
 getAndHandleSummoner = async summonerName => {
   const summonerResp = await fetch(
-    `http://localhost:5000/${summonerName}`
+    `https://league-app-stats.herokuapp.com/${summonerName}`
   )
   const summoner = await summonerResp.json()
 
@@ -47,7 +55,7 @@ loadSummonerMatches = async summonerName => {
   const accountId = await this.getAndHandleSummoner(summonerName)
 
   const matchesResp = await fetch(
-    `http://localhost:5000/${accountId}/matches`
+    `https://league-app-stats.herokuapp.com/${accountId}/matches`
   )
   const matches = await matchesResp.json()
 

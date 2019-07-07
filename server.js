@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 5000
+const port = process.env.PORT || 5000
 const path = require('path');
 //kayn to work with Riot API
 const { Kayn, REGIONS } = require('kayn')
