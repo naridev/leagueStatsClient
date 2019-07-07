@@ -5,15 +5,6 @@ import List from './components/List'
 import { ClipLoader } from 'react-spinners'
 import styled from 'styled-components'
 
-if(process.env.NODE_ENV === 'development') {
-  url = 'http://localhost:5000/'
-}
-
-if(process.env.NODE_ENV === 'production') {
-  url = 'https://league-app-stats.herokuapp.com/'
-}
-
-
 const Header = styled.h2`
   display: flex;
   align-items: center;
