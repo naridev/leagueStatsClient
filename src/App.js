@@ -27,6 +27,11 @@ class App extends Component {
     matches: undefined
   }
 
+componentDidMount() {
+  this.getAndHandleSummoner()
+  this.loadSummonerMatches()
+}
+
 //get provided summoner name
 getAndHandleSummoner = async summonerName => {
   const summonerResp = await fetch(
